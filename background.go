@@ -21,7 +21,10 @@ func Background[T any](loader Loader[T]) *background[T] {
 
 func (b *background[T]) Load(ctx context.Context) (T, error) {
 	if b.loaded {
-		go b.load(context.Background())
+		go func() {
+			// ignore results as those are available in b.cached and b.err
+			_, _ = b.load(context.Background())
+		}()
 		return b.cached, b.err
 	}
 
